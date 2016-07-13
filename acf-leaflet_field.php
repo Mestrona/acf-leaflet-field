@@ -76,6 +76,33 @@ class acf_field_leaflet_field_plugin
 
 new acf_field_leaflet_field_plugin();
 
+
+    /**
+     * Render a leaflet field
+     *
+     * Usually called internally
+     *
+     * @param object $field_obj Field Object
+     */
+    function acf_lf_render_direct($field_obj)
+    {
+        $field_obj['map_provider'] = acf_field_leaflet_field::$map_providers[$field_obj['map_provider']];
+
+        if( $field_obj['map_provider']['requires_key'] ) {
+            $field_obj['map_provider']['url'] = str_replace( '{api_key}', $field_obj['api_key'], $field_obj['map_provider']['url'] );
+        }
+
+        // enqueue styles
+        wp_enqueue_style( 'leaflet', plugins_url( '/js/leaflet/leaflet.css', __FILE__ ), array(), '0.7.3', 'all' );
+
+        // enqueue scripts
+        wp_enqueue_script( 'jquery' );
+        wp_enqueue_script( 'leaflet', plugins_url( '/js/leaflet/leaflet.js', __FILE__ ), array(), '0.7.3', true );
+        wp_enqueue_script( 'leaflet-frontend', plugins_url( '/js/leaflet-frontend.js', __FILE__ ), array( 'jquery', 'leaflet' ), '1.2.1', true );
+        wp_localize_script( 'leaflet-frontend', 'leaflet_field', $field_obj );
+        echo '<div id="' . $field_obj['id'] . '_map" class="leaflet-map" style="height:' . $field_obj['height'] . 'px;"></div>';
+    }
+
     /**
      *  the_leaflet_field()
      *
@@ -101,22 +128,8 @@ new acf_field_leaflet_field_plugin();
             )
         );
 
-        $field_obj['map_provider'] = acf_field_leaflet_field::$map_providers[$field_obj['map_provider']];
-
-        if( $field_obj['map_provider']['requires_key'] ) {
-            $field_obj['map_provider']['url'] = str_replace( '{api_key}', $field_obj['api_key'], $field_obj['map_provider']['url'] );
-        }
-
         if( $field_obj['value'] ) {
-            // enqueue styles
-            wp_enqueue_style( 'leaflet', plugins_url( '/js/leaflet/leaflet.css', __FILE__ ), array(), '0.7.3', 'all' );
-
-            // enqueue scripts
-            wp_enqueue_script( 'jquery' );
-            wp_enqueue_script( 'leaflet', plugins_url( '/js/leaflet/leaflet.js', __FILE__ ), array(), '0.7.3', true );
-            wp_enqueue_script( 'leaflet-frontend', plugins_url( '/js/leaflet-frontend.js', __FILE__ ), array( 'jquery', 'leaflet' ), '1.2.1', true );
-            wp_localize_script( 'leaflet-frontend', 'leaflet_field', $field_obj );
-            echo '<div id="' . $field_obj['id'] . '_map" class="leaflet-map" style="height:' . $field_obj['height'] . 'px;"></div>';
+            acf_lf_render_direct($field_obj);
         }
     }
 
