@@ -26,7 +26,13 @@ class acf_field_leaflet_field extends acf_field
             'requires_key'  => true,
             'nicename'      => 'CloudMade',
             'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-        )
+        ),
+        'mapboxstreets'     => array(
+            'url'           => "https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={api_key}",
+            'requires_key'  => true,
+            'nicename'      => 'MapBox Streets',
+            'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
+        ),
     );
 
     /*
@@ -93,7 +99,7 @@ class acf_field_leaflet_field extends acf_field
         $providers = array();
 
         foreach( acf_field_leaflet_field::$map_providers as $providerKey => $value ) {
-            $providers[$key] = $value['nicename'];
+            $providers[$providerKey] = $value['nicename'];
         }
 
         // Create Field Options HTML
@@ -118,8 +124,7 @@ class acf_field_leaflet_field extends acf_field
 
             <tr class="leaflet_field_api_key_field field_option field_option_<?php echo $this->name; ?>">
                 <td class="label">
-                    <label><?php _e('Cloudmade API-key','acf-leaflet-field'); ?></label>
-                    <p class="description"><?php _e('Register for an API-key at ','acf-leaflet-field'); ?><a href="http://account.cloudmade.com/register" target="_blank">CloudMade</a>.</p>
+                    <label><?php _e('API-key','acf-leaflet-field'); ?></label>
                 </td>
                 <td>
                     <?php
