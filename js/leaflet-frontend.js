@@ -1,3 +1,23 @@
+function acf_leaflet_field_render_features(map, map_settings) {
+    if (Object.keys(map_settings.markers).length > 0 || (map_settings.drawnItems && map_settings.drawnItems.features.length > 0)) {
+        jQuery.each(map_settings.markers, function (index, marker) {
+            L.geoJson(marker, {
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties && feature.properties.popupContent && feature.properties.popupContent != "") {
+                        layer.bindPopup(feature.properties.popupContent);
+                    }
+                }
+            }).addTo(map);
+        });
+
+        L.geoJson(map_settings.drawnItems, {
+            onEachFeature: function (feature, layer) {
+                layer.options.color = "#000000";
+            }
+        }).addTo(map);
+    }
+}
+
 jQuery(document).ready(function($) {
     // only render the map if an api-key is present
     render_leaflet_map();
@@ -44,28 +64,18 @@ jQuery(document).ready(function($) {
             doubleClickZoom: true
         });
 
+        // global hash of all the map objects
+        if (typeof leafield_field_map_objects == 'undefined') {
+            leafield_field_map_objects = {};
+        }
+        leafield_field_map_objects[leaflet_field.id] = map;
+
         L.tileLayer(leaflet_field.map_provider.url, {
             attribution: leaflet_field.map_provider.attribution,
             maxZoom: 18
         }).addTo(map);
 
-        if( Object.keys(map_settings.markers).length > 0 || (window.map_settings.drawnItems && window.map_settings.drawnItems.features.length > 0) ) {
-            $.each(map_settings.markers, function(index, marker) {
-                L.geoJson(marker, {
-                    onEachFeature:function(feature, layer){
-                        if(feature.properties && feature.properties.popupContent && feature.properties.popupContent != "") {
-                            layer.bindPopup(feature.properties.popupContent);
-                        }
-                    }
-                }).addTo(map);
-            });
-
-            L.geoJson(map_settings.drawnItems, {
-                onEachFeature: function(feature, layer) {
-                    layer.options.color = "#000000";
-                }
-            }).addTo(map);
-        }
+        acf_leaflet_field_render_features(map, map_settings);
     }
 
 });

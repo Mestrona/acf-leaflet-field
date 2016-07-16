@@ -79,8 +79,8 @@ new acf_field_leaflet_field_plugin();
 
     /**
      * Render a leaflet field
-     *
      * Usually called internally
+     * Required by advanced-custom-field-leaflet-field-aggregator Plugin
      *
      * @param object $field_obj Field Object
      */
