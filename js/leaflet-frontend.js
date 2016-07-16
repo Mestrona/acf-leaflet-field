@@ -1,4 +1,7 @@
 function acf_leaflet_field_render_features(map, map_settings) {
+    mapData = leafield_field_map_objects[leaflet_field.id];
+    map = mapData.map;
+    featureLayers = mapData.featureLayers;
     if (Object.keys(map_settings.markers).length > 0 || (map_settings.drawnItems && map_settings.drawnItems.features.length > 0)) {
         jQuery.each(map_settings.markers, function (index, marker) {
             L.geoJson(marker, {
@@ -7,14 +10,14 @@ function acf_leaflet_field_render_features(map, map_settings) {
                         layer.bindPopup(feature.properties.popupContent);
                     }
                 }
-            }).addTo(map);
+            }).addTo(featureLayers);
         });
 
         L.geoJson(map_settings.drawnItems, {
             onEachFeature: function (feature, layer) {
                 layer.options.color = "#000000";
             }
-        }).addTo(map);
+        }).addTo(featureLayers);
     }
 }
 
@@ -68,14 +71,16 @@ jQuery(document).ready(function($) {
         if (typeof leafield_field_map_objects == 'undefined') {
             leafield_field_map_objects = {};
         }
-        leafield_field_map_objects[leaflet_field.id] = map;
+        var featureLayers = L.layerGroup();
+        featureLayers.addTo(map);
+        leafield_field_map_objects[leaflet_field.id] = {'map' : map, 'featureLayers' : featureLayers };
 
         L.tileLayer(leaflet_field.map_provider.url, {
             attribution: leaflet_field.map_provider.attribution,
             maxZoom: 18
         }).addTo(map);
 
-        acf_leaflet_field_render_features(map, map_settings);
+        acf_leaflet_field_render_features(leaflet_field.id, map_settings);
     }
 
 });
