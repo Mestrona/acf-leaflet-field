@@ -73,7 +73,9 @@ jQuery(document).ready(function($) {
         }
         var featureLayers = L.layerGroup();
         featureLayers.addTo(map);
-        leafield_field_map_objects[leaflet_field.id] = {'map' : map, 'featureLayers' : featureLayers };
+        var lowZoomMarkerLayers = L.layerGroup();
+        lowZoomMarkerLayers.addTo(map);
+        leafield_field_map_objects[leaflet_field.id] = {map: map, featureLayers: featureLayers, lowZoomMarkerLayers: lowZoomMarkerLayers };
 
         L.tileLayer(leaflet_field.map_provider.url, {
             attribution: leaflet_field.map_provider.attribution,
@@ -81,6 +83,10 @@ jQuery(document).ready(function($) {
         }).addTo(map);
 
         acf_leaflet_field_render_features(leaflet_field.id, map_settings);
+
+        if (typeof after_render_leaflet_map == 'function') {
+            after_render_leaflet_map();
+        }
     }
 
 });
