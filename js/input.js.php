@@ -3,7 +3,9 @@
         // only render the map if an api-key is present
         var api_key = <?php echo '"'.$field['api_key'].'"'; ?>;
 
-        render_leaflet_map(uid);
+        window.maps_api[uid] = {};
+
+        return render_leaflet_map(uid);
 
         function render_leaflet_map(uid) {
             // Get the hidden input-field
@@ -106,6 +108,10 @@
             };
 
             var editableLayer = new L.FeatureGroup();
+
+            // publish editable layer
+            window.maps_api[uid].editableLayer = editableLayer;
+
             window.maps[uid].addLayer(editableLayer);
 
             var drawControl = new L.Control.Draw({
@@ -139,7 +145,6 @@
             window.maps[uid].addControl(drawControl);
 
             // render existing markers if we have any
-            console.log(window.map_settings[uid]);
             if( Object.keys(window.map_settings[uid].markers).length > 0 || (window.map_settings[uid].drawnItems && window.map_settings[uid].drawnItems.features.length > 0) ) {
                 var newMarkers = {};
                 $.each(window.map_settings[uid].markers, function(index, marker) {
@@ -280,7 +285,10 @@
 
                 update_field(uid);
             });
+
+            window.maps_api[uid].update_field = update_field;
         }
+
     };
 
     if( typeof window.maps == 'undefined' ) {
@@ -289,6 +297,10 @@
 
     if( typeof window.map_settings == 'undefined' ) {
         window.map_settings = {};
+    }
+
+    if( typeof window.maps_api == 'undefined' ) {
+        window.maps_api = {};
     }
 
     function initialize_field( map ) {
