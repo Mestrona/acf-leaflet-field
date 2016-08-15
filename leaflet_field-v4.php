@@ -187,6 +187,38 @@ class acf_field_leaflet_field extends acf_field
 
             <tr class="field_option field_option_<?php echo $this->name; ?>">
                 <td class="label">
+                    <label><?php _e('Latitude 2','acf-leaflet-field'); ?></label>
+                    <p class="description"><?php _e('If this one is filled, the combination of lat/lng 1 and lat/lng2 will be threated as a rectangle to zoom to','acf-leaflet-field'); ?></p>
+                </td>
+                <td>
+                    <?php
+                    do_action('acf/create_field', array(
+                        'type'  => 'number',
+                        'name'  => 'fields['.$key.'][lat2]',
+                        'value' => $field['lat2']
+                    ));
+                    ?>
+                </td>
+            </tr>
+
+            <tr class="field_option field_option_<?php echo $this->name; ?>">
+                <td class="label">
+                    <label><?php _e('Longitude 2','acf-leaflet-field'); ?></label>
+                    <p class="description"><?php _e('If this one is filled, the combination of lat/lng 1 and lat/lng2 will be threated as a rectangle to zoom to','acf-leaflet-field'); ?></p>
+                </td>
+                <td>
+                    <?php
+                    do_action('acf/create_field', array(
+                        'type'      => 'number',
+                        'name'      => 'fields['.$key.'][lng2]',
+                        'value'     => $field['lng2']
+                    ));
+                    ?>
+                </td>
+            </tr>
+
+            <tr class="field_option field_option_<?php echo $this->name; ?>">
+                <td class="label">
                     <label><?php _e('Height','acf-leaflet-field'); ?></label>
                     <p class="description"><?php _e('The map needs a specified height to be rendered correctly.','acf-leaflet-field'); ?></p>
                 </td>

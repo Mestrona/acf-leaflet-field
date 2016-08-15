@@ -43,12 +43,15 @@ jQuery(document).ready(function($) {
             };
         }
 
+        var bounds = null;
         if( map_settings.center.lat == null ) {
             map_settings.center.lat = leaflet_field.lat;
-        }
-
-        if( map_settings.center.lng == null ) {
             map_settings.center.lng = leaflet_field.lng;
+
+            if (leaflet_field.lat2 != null) {
+                bounds = L.latLngBounds(L.latLng(leaflet_field.lat, leaflet_field.lng),
+                    L.latLng(leaflet_field.lat2, leaflet_field.lng2));
+            }
         }
 
         // check if the zoom level is set and within 1-18
@@ -84,6 +87,9 @@ jQuery(document).ready(function($) {
 
         acf_leaflet_field_render_features(leaflet_field.id, map_settings);
 
+        if (bounds) {
+            map.fitBounds(bounds);
+        }
         if (typeof after_render_leaflet_map == 'function') {
             after_render_leaflet_map();
         }
