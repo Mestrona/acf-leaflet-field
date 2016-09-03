@@ -326,7 +326,7 @@ class acf_field_leaflet_field extends acf_field
                 <div class="leaflet-map" data-uid="<?php echo $uid; ?>" data-tile-layer="<?php echo $tile_layer; ?>" data-attribution='<?php echo $attribution; ?>'>
                     <div id="map_<?php echo $uid; ?>" style="height:<?php echo $field['height']; ?>px;"></div>
                 </div>
-                <a class="geo-import-button" href="javascript:return false;">Import Geodata (GPX)</a>
+                <a class="geo-import-button" href="javascript:return false;">Import Geodata (.gpx, .csv, .kml, .wkt, .topojson, .geojson, .polyline)</a>
                 <a class="geo-delete-button" href="javascript:return false;">Erase all Geodata</a>
             </div>
         <?php
