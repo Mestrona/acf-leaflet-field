@@ -28,6 +28,19 @@
                 };
             }
 
+
+            window.map_settings[uid].bounds = null;
+
+            if (field.attr('data-lat2') != null) {
+                window.map_settings[uid].initial_bounds = L.latLngBounds(
+                    L.latLng(field.attr('data-lat'), field.attr('data-lng')),
+                    L.latLng(field.attr('data-lat2'), field.attr('data-lng2'))
+                );
+            } else {
+                window.map_settings[uid].initial_center = L.latLng(field.attr('data-lat'), field.attr('data-lng'));
+                window.map_settings[uid].initial_zoom_level = field.attr('data-zoom-level');
+            }
+
             if( window.map_settings[uid].center.lat == null ) {
                 window.map_settings[uid].center.lat = field.attr('data-lat');
             }
@@ -52,6 +65,10 @@
                 doubleClickZoom: false
             });
 
+            if (window.map_settings[uid].initial_bounds) {
+                window.maps[uid].fitBounds(window.map_settings[uid].initial_bounds);
+            }
+
             L.tileLayer( tile_layer, {
                 attribution: attribution,
                 maxZoom: 18
@@ -66,6 +83,16 @@
                 else if( $(this).hasClass('tool-compass') ) {
                     // try to locate the user
                     window.maps[uid].locate();
+                }
+                else if( $(this).hasClass('tool-refocus') ) {
+                    // reset to initial view
+                    if (window.map_settings[uid].initial_bounds) {
+                        window.maps[uid].fitBounds(window.map_settings[uid].initial_bounds);
+                    } else {
+                        window.maps[uid].setView(window.map_settings[uid].initial_center,
+                            window.map_settings[uid].initial_zoom_level
+                        );
+                    }
                 }
                 else {
                     $('#leaflet_field-wrapper_' + uid).removeClass();
@@ -105,12 +132,14 @@
                 drawToolsControl: addControl('drawtools', 'share'),
                 removeControl: addControl('remove', 'cancel-circle red'),
                 //resetControl: addControl('reset', 'relaod'),
+                refocusControl: addControl('refocus', 'map-pin-stroke'),
             };
 
             var editableLayer = new L.FeatureGroup();
 
             // publish editable layer
             window.maps_api[uid].editableLayer = editableLayer;
+            window.maps_api[uid].update_field = update_field;
 
             window.maps[uid].addLayer(editableLayer);
 
@@ -285,8 +314,6 @@
 
                 update_field(uid);
             });
-
-            window.maps_api[uid].update_field = update_field;
         }
 
     };
