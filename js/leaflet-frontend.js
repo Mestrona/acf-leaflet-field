@@ -70,6 +70,28 @@ jQuery(document).ready(function($) {
             doubleClickZoom: true
         });
 
+        var addControl = function(toolName, icon, active, funct) { // FIXME: do not duplicate so much code from backend -> lib
+            active = (active) ? ' active' : '';
+            var newControl = L.control({position: 'topleft'});
+
+            newControl.onAdd = function () {
+                this._div = L.DomUtil.create('div', 'tool tool-' + toolName + ' icon-' + icon + active);
+
+                var stop = L.DomEvent.stopPropagation;
+
+                L.DomEvent
+                    .on(this._div, 'click', stop)
+                    .on(this._div, 'mousedown', stop)
+                    .on(this._div, 'dblclick', stop)
+                    .on(this._div, 'click', L.DomEvent.preventDefault)
+                    .on(this._div, 'click', funct);
+
+                return this._div;
+            };
+
+            newControl.addTo(map);
+        }
+
         // global hash of all the map objects
         if (typeof leafield_field_map_objects == 'undefined') {
             leafield_field_map_objects = {};
@@ -90,6 +112,12 @@ jQuery(document).ready(function($) {
         if (bounds) {
             map.fitBounds(bounds);
         }
+
+        addControl('refocus', 'map-pin-stroke', true, function() {
+            map.fitBounds(bounds); // fixme: also support center refocus
+        });
+
+
         if (typeof after_render_leaflet_map == 'function') {
             after_render_leaflet_map();
         }
