@@ -322,7 +322,7 @@ class acf_field_leaflet_field extends acf_field
         // render the field container,
         ?>
             <div id="leaflet_field-wrapper_<?php echo $uid; ?>" class="tool-marker-active">
-                <input type="hidden" value='<?php echo $field['value']; ?>' id="field_<?php echo $uid; ?>"
+                <input type="hidden" value="<?php echo htmlspecialchars($field['value']); ?>" id="field_<?php echo $uid; ?>"
                        name="<?php echo $field['name']; ?>" data-zoom-level="<?php echo $field['zoom_level']; ?>"
                        data-lat="<?php echo $field['lat']; ?>" data-lng="<?php echo $field['lng']; ?>"
                        data-lat2="<?php echo $field['lat2']; ?>" data-lng2="<?php echo $field['lng2']; ?>"
