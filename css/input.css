@@ -69,3 +69,19 @@
 body:not(.leaflet-dragging) .tool-marker-active .leaflet-map .leaflet-container:hover {
   cursor: crosshair;
 }
+
+.field_type-leaflet_field.is-fullscreen {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100000;
+  height: 100%;
+  width: 100%;
+  background: white;
+}
+
+.field_type-leaflet_field.is-fullscreen .leaflet-container {
+  height: calc( 100vh - 100px ) !important;
+}
