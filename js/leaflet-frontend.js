@@ -67,8 +67,11 @@ jQuery(document).ready(function($) {
         var map = L.map( leaflet_field.id + '_map', {
             center: new L.LatLng( map_settings.center.lat, map_settings.center.lng ),
             zoom: map_settings.zoom_level,
-            doubleClickZoom: true
+            doubleClickZoom: true,
+            scrollWheelZoom: false
         });
+
+        map.once('focus', function() { map.scrollWheelZoom.enable(); });
 
         var addControl = function(toolName, icon, active, funct) { // FIXME: do not duplicate so much code from backend -> lib
             active = (active) ? ' active' : '';
