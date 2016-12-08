@@ -68,7 +68,8 @@ jQuery(document).ready(function($) {
             center: new L.LatLng( map_settings.center.lat, map_settings.center.lng ),
             zoom: map_settings.zoom_level,
             doubleClickZoom: true,
-            scrollWheelZoom: false
+            scrollWheelZoom: false,
+            zoomSnap: 0.05,
         });
 
         map.once('focus', function() { map.scrollWheelZoom.enable(); });
