@@ -131,6 +131,12 @@ new acf_field_leaflet_field_plugin();
         );
 
         if( $field_obj['value'] ) {
+            if (function_exists('get_post_color')) {
+                $field_obj['value']->color = get_post_color($post_id);
+            } else {
+                $field_obj['value']->color = '#000000';
+            }
+
             acf_lf_render_direct($field_obj);
         }
     }

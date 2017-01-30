@@ -15,7 +15,7 @@ function acf_leaflet_field_render_features(map, map_settings) {
 
         L.geoJson(map_settings.drawnItems, {
             onEachFeature: function (feature, layer) {
-                layer.options.color = "#000000";
+                layer.options.color = map_settings.color;
             }
         }).addTo(featureLayers);
     }
