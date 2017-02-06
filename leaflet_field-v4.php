@@ -137,7 +137,26 @@ class acf_field_leaflet_field extends acf_field
                 </td>
             </tr>
 
-            <tr class="field_option field_option_<?php echo $this->name; ?>">
+            <tr class="leaflet_field_map_provider_field field_option field_option_<?php echo $this->name; ?>">
+                <td class="label">
+                    <label><?php _e('Additional Map providers','acf-leaflet-field'); ?></label>
+                    <p class="description"><?php _e('Select additional providers to be available. Currently only one API key is supported!','acf-leaflet-field'); ?></p>
+                </td>
+                <td>
+                    <?php
+                    do_action('acf/create_field', array(
+                        'type'      => 'checkbox',
+                        'name'      => 'fields['.$key.'][additional_map_providers]',
+                        'value'     => $field['additional_map_providers'],
+                        'layout'    => 'horizontal',
+                        'choices'   => $providers
+                    ));
+                    ?>
+                </td>
+            </tr>
+
+
+             <tr class="field_option field_option_<?php echo $this->name; ?>">
                 <td class="label">
                     <label><?php _e('Zoom level','acf-leaflet-field'); ?></label>
                     <p class="description"><?php _e('','acf-leaflet-field'); ?></p>
@@ -316,6 +335,15 @@ class acf_field_leaflet_field extends acf_field
         $tile_layer = str_replace( '{api_key}', $field['api_key'], acf_field_leaflet_field::$map_providers[$field['map_provider']]['url'] );
         $attribution = acf_field_leaflet_field::$map_providers[$field['map_provider']]['attribution'];
 
+        $additional_tile_layers = array();
+        // FIXME: extract common code from \acf_lf_render_direct
+        // FIXME: replace for API keys
+        if (is_array($field['additional_map_providers'])) {
+            foreach ($field['additional_map_providers'] as $key => $mapProvider) {
+                $additional_tile_layers[$key] = acf_field_leaflet_field::$map_providers[$mapProvider];
+            }
+        }
+
         // include the javascript
         include_once("js/input.js.php");
 
@@ -327,7 +355,7 @@ class acf_field_leaflet_field extends acf_field
                        data-lat="<?php echo $field['lat']; ?>" data-lng="<?php echo $field['lng']; ?>"
                        data-lat2="<?php echo $field['lat2']; ?>" data-lng2="<?php echo $field['lng2']; ?>"
                 />
-                <div class="leaflet-map" data-uid="<?php echo $uid; ?>" data-tile-layer="<?php echo $tile_layer; ?>" data-attribution='<?php echo $attribution; ?>'>
+                <div class="leaflet-map" data-uid="<?php echo $uid; ?>" data-tile-layer="<?php echo $tile_layer; ?>" data-additional-tile-layers="<?php echo esc_attr(json_encode($additional_tile_layers)); ?>" data-attribution='<?php echo $attribution; ?>'>
                     <div id="map_<?php echo $uid; ?>" style="height:<?php echo $field['height']; ?>px;"></div>
                 </div>
                 <button class="leaflet_toggle-full-screen-button" role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-fullscreen"></i></button>

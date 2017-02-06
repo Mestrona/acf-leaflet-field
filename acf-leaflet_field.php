@@ -91,6 +91,13 @@ new acf_field_leaflet_field_plugin();
         if( $field_obj['map_provider']['requires_key'] ) {
             $field_obj['map_provider']['url'] = str_replace( '{api_key}', $field_obj['api_key'], $field_obj['map_provider']['url'] );
         }
+        // FIXME: combine common code with \acf_field_leaflet_field::create_field
+        // FIXME: replace API key
+        if (is_array($field_obj['additional_map_providers'])) {
+            foreach ($field_obj['additional_map_providers'] as $key => $mapProvider) {
+                $field_obj['additional_map_providers'][$key] = acf_field_leaflet_field::$map_providers[$mapProvider];
+            }
+        }
 
         // enqueue styles
         wp_enqueue_style( 'leaflet', plugins_url( '/js/leaflet/leaflet.css', __FILE__ ), array(), '1.0.2', 'all' );

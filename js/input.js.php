@@ -1,7 +1,9 @@
 <script type="text/javascript">
-    var leaflet_init = function(uid, tile_layer, attribution, $) {
+    var leaflet_init = function(uid, tile_layer, attribution, $, additional_tile_layers) {
         // only render the map if an api-key is present
         var api_key = <?php echo '"'.$field['api_key'].'"'; ?>;
+
+        console.log(additional_tile_layers);
 
         window.maps_api[uid] = {};
 
@@ -69,10 +71,31 @@
                 window.maps[uid].fitBounds(window.map_settings[uid].initial_bounds);
             }
 
-            L.tileLayer( tile_layer, {
+            var layers = {};
+
+            var mainLayer = L.tileLayer( tile_layer, {
                 attribution: attribution,
                 maxZoom: 18
             }).addTo(window.maps[uid]);
+
+
+            mainLayer.addTo(window.maps[uid]);
+
+            layers['Main'] = mainLayer;
+
+
+            additional_tile_layers = JSON.parse(additional_tile_layers);
+
+            for (var i = 0; i < additional_tile_layers.length; i++) {
+                var provider = additional_tile_layers[i];
+                var additionalLayer = L.tileLayer(provider.url, {
+                    attribution: provider.attribution,
+                    maxZoom: 18
+                });
+                layers[provider.nicename] = additionalLayer;
+            }
+
+            L.control.layers(layers).addTo(window.maps[uid]);
 
             var controlClick = function(e) {
                 var uid = $(this).parents('.leaflet-map').attr('data-uid');
@@ -407,7 +430,7 @@
 
         if( typeof window.maps[uid] == 'undefined' ) {
             window.maps[uid] = null;
-            leaflet_init(uid, map.attr('data-tile-layer'), map.attr('data-attribution'), jQuery);
+            leaflet_init(uid, map.attr('data-tile-layer'), map.attr('data-attribution'), jQuery, map.attr('data-additional-tile-layers'));
         }
 
         initialize_buttons(window.maps[uid], uid);

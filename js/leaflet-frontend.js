@@ -106,10 +106,27 @@ jQuery(document).ready(function($) {
         lowZoomMarkerLayers.addTo(map);
         leafield_field_map_objects[leaflet_field.id] = {map: map, featureLayers: featureLayers, lowZoomMarkerLayers: lowZoomMarkerLayers };
 
-        L.tileLayer(leaflet_field.map_provider.url, {
+        var layers = {};
+
+        var mainLayer = L.tileLayer(leaflet_field.map_provider.url, {
             attribution: leaflet_field.map_provider.attribution,
             maxZoom: 18
-        }).addTo(map);
+        });
+
+        mainLayer.addTo(map);
+
+        layers[leaflet_field.map_provider.nicename] = mainLayer;
+
+        for (var i = 0; i < leaflet_field.additional_map_providers.length; i++) {
+            var provider = leaflet_field.additional_map_providers[i];
+            var additionalLayer = L.tileLayer(provider.url, {
+                attribution: provider.attribution,
+                maxZoom: 18
+            });
+            layers[provider.nicename] = additionalLayer;
+        }
+
+        L.control.layers(layers).addTo(map);
 
         acf_leaflet_field_render_features(leaflet_field.id, map_settings);
 
