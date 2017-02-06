@@ -172,6 +172,7 @@
 
 
             window.maps[uid].addControl(drawControl);
+            window.maps_api[uid].drawControl = drawControl;
 
             // render existing markers if we have any
             if( Object.keys(window.map_settings[uid].markers).length > 0 || (window.map_settings[uid].drawnItems && window.map_settings[uid].drawnItems.features.length > 0) ) {
@@ -330,6 +331,72 @@
         window.maps_api = {};
     }
 
+    function initialize_buttons(map, uid) {
+        var $ = jQuery;
+        $('.manual-click-button').click(function () {
+            var inputString = prompt("Please enter the coordinate (decimal format). Press cancel to stop",
+                map.getCenter().lat.toFixed(5) + ',' + map.getCenter().lng.toFixed(5));
+            var splitted = inputString.split(',');
+
+            if (inputString == null) {
+                return;
+            }
+
+            try {
+               var latLngPoint = new L.LatLng(splitted[0], splitted[1]);
+            } catch (e) {
+                window.alert('invalid entry');
+            }
+
+            map.panTo(latLngPoint);
+
+            var eventData = {
+                latlng: latLngPoint,
+                layerPoint: map.latLngToLayerPoint(latLngPoint),
+                containerPoint: map.latLngToContainerPoint(latLngPoint),
+            };
+
+            var originalEventData = { view: window, clientX: eventData.containerPoint.x, clientY: eventData.containerPoint.y,
+                'bubbles': true,
+                'cancelable': true
+            };
+
+            // we need to move the mouse because of the transparent mouse marker leaflet.draw uses
+            eventData.originalEvent = new MouseEvent('move', originalEventData);
+            map.fireEvent('mousemove', eventData);
+
+            eventData.originalEvent = new MouseEvent('click', originalEventData);
+            map.fireEvent('click', eventData);
+
+            eventData.originalEvent = new MouseEvent('down', originalEventData);
+            map.fireEvent('mousedown', eventData);
+
+            eventData.originalEvent = new MouseEvent('up', originalEventData);
+            map.fireEvent('mouseup', eventData);
+
+            // click on the mouse markers
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+
+                   if (L.DomUtil.hasClass(layer._icon, 'leaflet-mouse-marker')) {
+                        eventData.originalEvent = new MouseEvent('down', originalEventData);
+                        layer.fireEvent('mousedown', eventData);
+
+                        eventData.originalEvent = new MouseEvent('up', originalEventData);
+                        layer.fireEvent('mouseup', eventData);
+
+                   }
+                }
+            });
+
+            // FIXME: poor man's loop, while did not work for now
+            window.setTimeout(function() {
+               $('.manual-click-button').trigger('click');
+            }, 100);
+
+        });
+    }
+
     function initialize_field( map ) {
         uid = map.attr('data-uid');
 
@@ -342,6 +409,8 @@
             window.maps[uid] = null;
             leaflet_init(uid, map.attr('data-tile-layer'), map.attr('data-attribution'), jQuery);
         }
+
+        initialize_buttons(window.maps[uid], uid);
     }
 
     if( typeof acf.add_action !== 'undefined' ) {
