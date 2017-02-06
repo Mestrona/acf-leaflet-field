@@ -332,6 +332,7 @@ class acf_field_leaflet_field extends acf_field
                 </div>
                 <button class="leaflet_toggle-full-screen-button" role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-fullscreen"></i></button>
                 <a class="geo-import-button" href="javascript:">Import Geodata (.gpx, .csv, .kml, .wkt, .topojson, .geojson, .polyline)</a>
+                <a class="manual-click-button" href="javascript:">Click at coordinate</a>
                 <a class="geo-delete-button" href="javascript:">Erase all Geodata</a>
             </div>
         <?php
