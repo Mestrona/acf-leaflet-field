@@ -28,7 +28,24 @@ class acf_field_leaflet_field_plugin
         $mofile = trailingslashit(dirname(__File__)) . 'lang/' . $domain . '-' . get_locale() . '.mo';
         load_textdomain( $domain, $mofile );
 
-        // version 5 (PRO)
+	    add_action( 'rest_api_init', function () {
+		    register_rest_route( 'acf_leaflet_field/v1', 'geodata/(?P<id>\d+).geojson', array(
+				    'methods'  => WP_REST_Server::READABLE,
+				    'callback' => array( $this, 'get_geodata' ),
+				    'args' => array(
+					    'id' => array(
+						    'validate_callback' => function($param, $request, $key) {
+							    return is_numeric( $param );
+						    }
+					    ),
+				    )
+			    )
+		    );
+
+	    });
+
+
+	    // version 5 (PRO)
         add_action('acf/include_field_types', array($this, 'register_fields_v5'));
 
         // version 4+
@@ -41,6 +58,35 @@ class acf_field_leaflet_field_plugin
         }
     }
 
+
+    function get_geodata( WP_REST_Request $request)
+    {
+        $post_id = $request['id'];
+        $field_name = sanitize_key($request['field']);
+
+	    header('Content-Description: File Transfer');
+	    header('Content-Type: text/json');
+	    header('Content-Disposition: attachment; filename="' . $field_name . '-' . $post_id . '.geojson"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+
+	    $field_obj = get_field_object(
+		    $field_name,
+		    $post_id,
+		    array(
+			    'load_value' => true
+		    )
+	    );
+
+        $result = $field_obj['value']->drawnItems;
+
+        foreach ($field_obj['value']->markers as $marker)  {
+	        $result->features[] = $marker;
+        }
+
+        return $result;
+    }
     /*
     *  Init
     *

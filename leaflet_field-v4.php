@@ -321,6 +321,8 @@ class acf_field_leaflet_field extends acf_field
 
     function create_field( $field )
     {
+        global $post;
+
         // defaults
         $field = array_merge($this->defaults, $field);
 
@@ -360,6 +362,7 @@ class acf_field_leaflet_field extends acf_field
                 </div>
                 <button class="leaflet_toggle-full-screen-button" role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-fullscreen"></i></button>
                 <a class="geo-import-button" href="javascript:">Import Geodata (.gpx, .csv, .kml, .wkt, .topojson, .geojson, .polyline)</a>
+                <a class="geo-export-button" href="/wp-json/acf_leaflet_field/v1/geodata/<?php echo $post->ID ?>.geojson?field=<?php echo $field['_name']; ?>">Export saved Geodata (.geojson)</a>
                 <a class="manual-click-button" href="javascript:">Click at coordinate(s)</a>
                 <a class="geo-delete-button" href="javascript:">Erase all Geodata</a>
             </div>
