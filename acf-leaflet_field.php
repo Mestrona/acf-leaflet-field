@@ -133,15 +133,17 @@ new acf_field_leaflet_field_plugin();
     function acf_lf_render_direct($field_obj)
     {
         $field_obj['map_provider'] = acf_field_leaflet_field::$map_providers[$field_obj['map_provider']];
-
+        
         if( $field_obj['map_provider']['requires_key'] ) {
             $field_obj['map_provider']['url'] = str_replace( '{api_key}', $field_obj['api_key'], $field_obj['map_provider']['url'] );
         }
         // FIXME: combine common code with \acf_field_leaflet_field::create_field
-        // FIXME: replace API key
+        // FIXME: API KEy of base map provider must be the same as all additional providers
         if (is_array($field_obj['additional_map_providers'])) {
             foreach ($field_obj['additional_map_providers'] as $key => $mapProvider) {
-                $field_obj['additional_map_providers'][$key] = acf_field_leaflet_field::$map_providers[$mapProvider];
+            	$providerData  = acf_field_leaflet_field::$map_providers[$mapProvider];
+	            $providerData['url'] = str_replace( '{api_key}', $field_obj['api_key'], $providerData['url'] );
+                $field_obj['additional_map_providers'][$key] = $providerData;
             }
         }
 

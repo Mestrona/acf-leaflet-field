@@ -33,6 +33,12 @@ class acf_field_leaflet_field extends acf_field
             'nicename'      => 'MapBox Streets',
             'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
         ),
+        'mapboxhybrid'     => array(
+            'url'           => "https://api.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.jpg70?access_token={api_key}",
+            'requires_key'  => true,
+            'nicename'      => 'MapBox Satellite and Streets',
+            'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
+        ),
     );
 
     /*
@@ -342,7 +348,7 @@ class acf_field_leaflet_field extends acf_field
         // FIXME: replace for API keys
         if (is_array($field['additional_map_providers'])) {
             foreach ($field['additional_map_providers'] as $key => $mapProvider) {
-                $additional_tile_layers[$key] = acf_field_leaflet_field::$map_providers[$mapProvider];
+	            $additional_tile_layers[$key] = acf_field_leaflet_field::$map_providers[$mapProvider];
             }
         }
 
