@@ -39,6 +39,12 @@ class acf_field_leaflet_field extends acf_field
             'nicename'      => 'MapBox Satellite and Streets',
             'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
         ),
+        'local'     => array(
+            'url'           => "/tiles/{z}/{x}/{y}.png",
+            'requires_key'  => false,
+            'nicename'      => 'Locally stored tiles',
+            'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
+        ),
     );
 
     /*
