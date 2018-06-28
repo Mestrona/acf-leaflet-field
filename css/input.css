@@ -1,3 +1,6 @@
+.leaflet-map .leaflet-container {
+  height: 400px;
+}
 .leaflet-map .leaflet-control-container .tool {
   display: inline-block;
   width: 26px;
