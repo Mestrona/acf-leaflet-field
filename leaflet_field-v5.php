@@ -26,7 +26,25 @@ class acf_field_leaflet_field extends acf_field
             'requires_key'  => true,
             'nicename'      => 'CloudMade',
             'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-        )
+        ),
+        'mapboxstreets'     => array(
+            'url'           => "https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={api_key}",
+            'requires_key'  => true,
+            'nicename'      => 'MapBox Streets',
+            'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
+        ),
+        'mapboxhybrid'     => array(
+            'url'           => "https://api.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.jpg70?access_token={api_key}",
+            'requires_key'  => true,
+            'nicename'      => 'MapBox Satellite and Streets',
+            'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
+        ),
+        'local'     => array(
+            'url'           => "/tiles/{z}/{x}/{y}.png",
+            'requires_key'  => false,
+            'nicename'      => 'Locally stored tiles',
+            'attribution'   => 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">MapBox</a>'
+        ),
     );
 
     /*
@@ -241,16 +259,34 @@ class acf_field_leaflet_field extends acf_field
         $tile_layer = str_replace( '{api_key}', $field['api_key'], acf_field_leaflet_field::$map_providers[$field['map_provider']]['url'] );
         $attribution = acf_field_leaflet_field::$map_providers[$field['map_provider']]['attribution'];
 
+        $additional_tile_layers = array();
+        // FIXME: extract common code from \acf_lf_render_direct
+        // FIXME: replace for API keys
+        if (is_array($field['additional_map_providers'])) {
+            foreach ($field['additional_map_providers'] as $key => $mapProvider) {
+	            $additional_tile_layers[$key] = acf_field_leaflet_field::$map_providers[$mapProvider];
+            }
+        }
+
         // include the javascript
         include_once("js/input.js.php");
 
         // render the field container,
         ?>
             <div id="leaflet_field-wrapper_<?php echo $uid; ?>" class="tool-marker-active">
-                <input type="hidden" value='<?php echo $field['value']; ?>' id="field_<?php echo $uid; ?>" name="<?php echo $field['name']; ?>" data-zoom-level="<?php echo $field['zoom_level']; ?>" data-lat="<?php echo $field['lat']; ?>" data-lng="<?php echo $field['lng']; ?>" />
-                <div class="leaflet-map" data-uid="<?php echo $uid; ?>" data-tile-layer="<?php echo $tile_layer; ?>" data-attribution='<?php echo $attribution; ?>'>
+                <input type="hidden" value="<?php echo htmlspecialchars($field['value']); ?>" id="field_<?php echo $uid; ?>"
+                       name="<?php echo $field['name']; ?>" data-zoom-level="<?php echo $field['zoom_level']; ?>"
+                       data-lat="<?php echo $field['lat']; ?>" data-lng="<?php echo $field['lng']; ?>"
+                       data-lat2="<?php echo $field['lat2']; ?>" data-lng2="<?php echo $field['lng2']; ?>"
+                />
+                <div class="leaflet-map" data-uid="<?php echo $uid; ?>" data-tile-layer="<?php echo $tile_layer; ?>" data-additional-tile-layers="<?php echo esc_attr(json_encode($additional_tile_layers)); ?>" data-attribution='<?php echo $attribution; ?>'>
                     <div id="map_<?php echo $uid; ?>" style="height:<?php echo $field['height']; ?>px;"></div>
                 </div>
+                <button class="leaflet_toggle-full-screen-button" role="presentation" type="button" tabindex="-1"><i class="mce-ico mce-i-fullscreen"></i></button>
+                <a class="geo-import-button" href="javascript:">Import Geodata (.gpx, .csv, .kml, .wkt, .topojson, .geojson, .polyline)</a>
+                <a class="geo-export-button" href="/wp-json/acf_leaflet_field/v1/geodata/<?php echo $post->ID ?>.geojson?field=<?php echo $field['_name']; ?>">Export saved Geodata (.geojson)</a>
+                <a class="manual-click-button" href="javascript:">Click at coordinate(s)</a>
+                <a class="geo-delete-button" href="javascript:">Erase all Geodata</a>
             </div>
         <?php
     }

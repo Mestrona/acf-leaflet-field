@@ -84,15 +84,17 @@
             layers['Main'] = mainLayer;
 
 
-            additional_tile_layers = JSON.parse(additional_tile_layers);
+            if (additional_tile_layers) {
+                additional_tile_layers = JSON.parse(additional_tile_layers);
 
-            for (var i = 0; i < additional_tile_layers.length; i++) {
-                var provider = additional_tile_layers[i];
-                var additionalLayer = L.tileLayer(provider.url, {
-                    attribution: provider.attribution,
-                    maxZoom: 18
-                });
-                layers[provider.nicename] = additionalLayer;
+                for (var i = 0; i < additional_tile_layers.length; i++) {
+                    var provider = additional_tile_layers[i];
+                    var additionalLayer = L.tileLayer(provider.url, {
+                        attribution: provider.attribution,
+                        maxZoom: 18
+                    });
+                    layers[provider.nicename] = additionalLayer;
+                }
             }
 
             L.control.layers(layers).addTo(window.maps[uid]);

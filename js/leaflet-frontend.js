@@ -1,5 +1,5 @@
 function acf_leaflet_field_render_features(map, map_settings) {
-    mapData = leafield_field_map_objects[leaflet_field.id];
+    mapData = leafield_field_map_objects[leaflet_field.prefix + '-field-' + leaflet_field.name];
     map = mapData.map;
     featureLayers = mapData.featureLayers;
     if (Object.keys(map_settings.markers).length > 0 || (map_settings.drawnItems && map_settings.drawnItems.features.length > 0)) {
@@ -64,7 +64,7 @@ jQuery(document).ready(function($) {
             }
         }
 
-        var map = L.map( leaflet_field.id + '_map', {
+        var map = L.map( leaflet_field.prefix + '-field-' + leaflet_field.name + '_map', {
             center: new L.LatLng( map_settings.center.lat, map_settings.center.lng ),
             zoom: map_settings.zoom_level,
             doubleClickZoom: true,
@@ -104,7 +104,9 @@ jQuery(document).ready(function($) {
         featureLayers.addTo(map);
         var lowZoomMarkerLayers = L.layerGroup();
         lowZoomMarkerLayers.addTo(map);
-        leafield_field_map_objects[leaflet_field.id] = {map: map, featureLayers: featureLayers, lowZoomMarkerLayers: lowZoomMarkerLayers };
+
+        var field_id = leaflet_field.prefix + '-field-' + leaflet_field.name;
+        leafield_field_map_objects[field_id] = {map: map, featureLayers: featureLayers, lowZoomMarkerLayers: lowZoomMarkerLayers };
 
         var layers = {};
 
@@ -117,18 +119,20 @@ jQuery(document).ready(function($) {
 
         layers[leaflet_field.map_provider.nicename] = mainLayer;
 
-        for (var i = 0; i < leaflet_field.additional_map_providers.length; i++) {
-            var provider = leaflet_field.additional_map_providers[i];
-            var additionalLayer = L.tileLayer(provider.url, {
-                attribution: provider.attribution,
-                maxZoom: 18
-            });
-            layers[provider.nicename] = additionalLayer;
+        if (leaflet_field.additional_map_provider) {
+            for (var i = 0; i < leaflet_field.additional_map_providers.length; i++) {
+                var provider = leaflet_field.additional_map_providers[i];
+                var additionalLayer = L.tileLayer(provider.url, {
+                    attribution: provider.attribution,
+                    maxZoom: 18
+                });
+                layers[provider.nicename] = additionalLayer;
+            }
         }
 
         L.control.layers(layers).addTo(map);
 
-        acf_leaflet_field_render_features(leaflet_field.id, map_settings);
+        acf_leaflet_field_render_features(leaflet_field.prefix + '-field-' + leaflet_field.name, map_settings);
 
         if (bounds) {
             map.fitBounds(bounds);

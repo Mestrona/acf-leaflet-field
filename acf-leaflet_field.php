@@ -139,7 +139,7 @@ new acf_field_leaflet_field_plugin();
         }
         // FIXME: combine common code with \acf_field_leaflet_field::create_field
         // FIXME: API KEy of base map provider must be the same as all additional providers
-        if (is_array($field_obj['additional_map_providers'])) {
+        if (is_array($field_obj['additional_map_providers'] ?? null)) {
             foreach ($field_obj['additional_map_providers'] as $key => $mapProvider) {
             	$providerData  = acf_field_leaflet_field::$map_providers[$mapProvider];
 	            $providerData['url'] = str_replace( '{api_key}', $field_obj['api_key'], $providerData['url'] );
@@ -157,7 +157,7 @@ new acf_field_leaflet_field_plugin();
         wp_enqueue_script( 'leaflet', plugins_url( '/js/leaflet/leaflet.js', __FILE__ ), array(), '1.0.2', true );
         wp_enqueue_script( 'leaflet-frontend', plugins_url( '/js/leaflet-frontend.js', __FILE__ ), array( 'jquery', 'leaflet' ), '1.2.1', true );
         wp_localize_script( 'leaflet-frontend', 'leaflet_field', $field_obj );
-        echo '<div id="' . $field_obj['id'] . '_map" class="leaflet-map"' . ($field_obj['height'] ? ' style="height:' . $field_obj['height'] . 'px;"' : '') . '></div>';
+        echo '<div id="' . $field_obj['prefix'] . '-field-' . $field_obj['name'] . '_map" class="leaflet-map"' . ($field_obj['height'] ? ' style="height:' . $field_obj['height'] . 'px;"' : '') . '></div>';
     }
 
     /**
