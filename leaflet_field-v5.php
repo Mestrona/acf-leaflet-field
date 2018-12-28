@@ -134,6 +134,15 @@ class acf_field_leaflet_field extends acf_field
         ));
 
         acf_render_field_setting( $field, array(
+            'label'         => __('Additional Map Providers', 'acf-leaflet-field'),
+            'instructions'  => __('Select map providers', 'acf-leaflet-field'),
+            'type'          => 'checkbox',
+            'name'          => 'additional_map_providers',
+            'layout'        => 'horizontal',
+            'choices'       => $providers
+        ));
+
+        acf_render_field_setting( $field, array(
             'label'         => __('Cloudmade API-key', 'acf-leaflet-field'),
             'instructions'  => __('Register for an API-key at <a href="http://account.cloudmade.com/register" target="_blank">CloudMade</a>.', 'acf-leaflet-field'),
             'type'          => 'text',
@@ -162,6 +171,23 @@ class acf_field_leaflet_field extends acf_field
             'type'          => 'number',
             'name'          => 'lng'
         ));
+
+        acf_render_field_setting( $field, array(
+            'label'         => __('Default latitude 2', 'acf-leaflet-field'),
+            'instructions'  => __( 'If this one is filled, the combination of lat/lng 1 and lat/lng2 will be threated as a rectangle to zoom to', 'acf-leaflet-field'),
+            'prepend'       => 'lat',
+            'type'          => 'number',
+            'name'          => 'lat2'
+        ));
+
+        acf_render_field_setting( $field, array(
+            'label'         => __('Default longitude 2', 'acf-leaflet-field'),
+            'instructions'  => __( 'If this one is filled, the combination of lat/lng 1 and lat/lng2 will be threated as a rectangle to zoom to', 'acf-leaflet-field'),
+            'prepend'       => 'lng',
+            'type'          => 'number',
+            'name'          => 'lng2'
+        ));
+
 
         acf_render_field_setting( $field, array(
             'label'         => __('Height', 'acf-leaflet-field'),
@@ -243,7 +269,7 @@ class acf_field_leaflet_field extends acf_field
     */
 
     function render_field( $field ) {
-
+        global $post;
 
         // defaults
         $field = array_merge($this->defaults, $field);
