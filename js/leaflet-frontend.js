@@ -47,11 +47,12 @@ jQuery(document).ready(function($) {
         if( map_settings.center.lat == null ) {
             map_settings.center.lat = leaflet_field.lat;
             map_settings.center.lng = leaflet_field.lng;
+        }
 
-            if (leaflet_field.lat2 != null) {
-                bounds = L.latLngBounds(L.latLng(leaflet_field.lat, leaflet_field.lng),
-                    L.latLng(leaflet_field.lat2, leaflet_field.lng2));
-            }
+        // always force bounds, if lat2 is set
+        if (leaflet_field.lat2 != null) {
+            bounds = L.latLngBounds(L.latLng(leaflet_field.lat, leaflet_field.lng),
+                L.latLng(leaflet_field.lat2, leaflet_field.lng2));
         }
 
         // check if the zoom level is set and within 1-18
