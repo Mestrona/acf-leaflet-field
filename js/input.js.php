@@ -3,8 +3,6 @@
         // only render the map if an api-key is present
         var api_key = <?php echo '"'.$field['api_key'].'"'; ?>;
 
-        console.log(additional_tile_layers);
-
         window.maps_api[uid] = {};
 
         return render_leaflet_map(uid);
@@ -66,6 +64,7 @@
                 zoom: window.map_settings[uid].zoom_level,
                 doubleClickZoom: false
             });
+
 
             if (window.map_settings[uid].initial_bounds) {
                 window.maps[uid].fitBounds(window.map_settings[uid].initial_bounds);
