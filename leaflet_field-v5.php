@@ -335,14 +335,14 @@ class acf_field_leaflet_field extends acf_field
     function input_admin_enqueue_scripts() {
 
         // styles
-        wp_enqueue_style( 'leaflet', plugins_url( '/js/leaflet/leaflet.css', __FILE__ ), array(), '0.7.3', 'all' );
+        wp_enqueue_style( 'leaflet', plugins_url( '/js/leaflet/leaflet.css', __FILE__ ), array(), '1.4.0', 'all' );
         wp_enqueue_style( 'leaflet.draw', plugins_url( '/js/Leaflet.draw/dist/leaflet.draw.css', __FILE__ ), array(), 'ccca4b11ba4ff545433bf70f610b215053a2615e', 'all' );
         wp_enqueue_style( 'icomoon', plugins_url( '/css/icomoon/style.css', __FILE__ ), array(), '1.0.0', 'all' );
         wp_enqueue_style( 'leaflet-field', plugins_url( '/css/input.css', __FILE__ ), array( 'leaflet', 'icomoon' ), '1', 'all' );
 
         // scripts
         wp_enqueue_script( 'jquery' );
-        wp_register_script( 'leaflet', plugins_url( '/js/leaflet/leaflet.js', __FILE__ ), array(), '0.7.3', true );
+        wp_register_script( 'leaflet', plugins_url( '/js/leaflet/leaflet.js', __FILE__ ), array(), '1.4.0', true );
         wp_register_script( 'leaflet.draw', plugins_url( '/js/Leaflet.draw/dist/leaflet.draw.js', __FILE__ ), array( 'leaflet' ), 'ccca4b11ba4ff545433bf70f610b215053a2615e', true );
         wp_enqueue_script( 'leaflet' );
         wp_enqueue_script( 'leaflet.draw' );

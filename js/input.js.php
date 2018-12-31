@@ -435,6 +435,8 @@
         }
 
         initialize_buttons(window.maps[uid], uid);
+
+        window.setTimeout(window.maps[uid].invalidateSize.bind(window.maps[uid]));
     }
 
     if( typeof acf.add_action !== 'undefined' ) {
