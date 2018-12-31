@@ -186,6 +186,9 @@ new acf_field_leaflet_field_plugin();
         );
 
         if( $field_obj['value'] ) {
+            if (is_string($field_obj['value'])) {
+                $field_obj['value'] = json_decode($field_obj['value']);
+            }
             if (function_exists('get_post_color')) {
                 $field_obj['value']->color = get_post_color($post_id);
             } else {
@@ -196,4 +199,3 @@ new acf_field_leaflet_field_plugin();
         }
     }
 
-?>
